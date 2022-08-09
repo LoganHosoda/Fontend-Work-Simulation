@@ -1,22 +1,36 @@
 import BlogPost from "./BlogPost";
 import Pagination from "./Pagination";
-import React from "react";
+import React, {useState} from "react";
 import blogs from "../data/blogs.json";
 
 const PAGE_SIZES = [15, 25, 50, 100];
 
-function BlogList() {
-  const currentPaginationData = blogs.posts.slice(0, 15);
+function BlogList() {  
+  const [pageSize, setPageSize] = useState(15);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentBlogData, updateBlogData] = useState(
+    blogs.posts.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+  );
+  const totalCount = blogs.posts.length;
+  const totalPages = Math.ceil(totalCount / pageSize);
 
-  const updateRowsPerPage = () => {};
-  const updatePage = () => {};
+  const updateRowsPerPage = (size) => {
+    setPageSize(size),
+    setCurrentPage(1),
+    updateBlogData(blogs.posts.slice((1 - 1) * size, 1 * size))
+  };
 
+  const updatePage = (newPage) => {
+    setCurrentPage(newPage),
+    updateBlogData(blogs.posts.slice((newPage - 1) * pageSize, newPage * pageSize))
+  };
+  
   return (
     <div>
       <Pagination
-        currentPage={1}
-        totalCount={blogs.posts.length}
-        pageSize={15}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pageSize={pageSize}
         pageSizeOptions={PAGE_SIZES}
         onPageChange={updatePage}
         onPageSizeOptionChange={updateRowsPerPage}
@@ -25,7 +39,7 @@ function BlogList() {
         // Do not remove the aria-label below, it is used for Hatchways automation.
         aria-label="blog list"
       >
-        {currentPaginationData.map((blog) => (
+        {currentBlogData.map((blog) => (
           <BlogPost
             key={blog.id}
             author={blog.author}
@@ -38,5 +52,6 @@ function BlogList() {
     </div>
   );
 }
+
 
 export default BlogList;

@@ -4,22 +4,20 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/outline";
 import usePagination, { DOTS } from "../hooks/usePagination";
 
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useMemo } from "react";
 import { nanoid } from "nanoid";
 
 function Pagination({
   onPageChange,
   onPageSizeOptionChange,
-  totalCount,
+  totalPages,
   currentPage,
   pageSize,
   pageSizeOptions,
 }) {
-  const paginationRange = usePagination({
-    currentPage,
-    totalCount,
-    pageSize,
-  });
+  const paginationRange = useMemo (() => {
+    return usePagination({currentPage, totalPages})
+  }, [currentPage, totalPages]);
 
   const onNext = () => {
     onPageChange(currentPage + 1);
@@ -42,7 +40,7 @@ function Pagination({
           // Do not remove the aria-label below, it is used for Hatchways automation.
           aria-label="Goto previous page"
           onClick={onPrevious}
-          disabled={false} // change this line to disable a button.
+          disabled={currentPage === 1} // change this line to disable a button.
         >
           <ChevronLeftIcon />
         </button>
@@ -63,7 +61,7 @@ function Pagination({
           <li
             key={key}
             className="paginationItem"
-            aria-current="false" // change this line to highlight a current page.
+            aria-current={currentPage === pageNumber ? "page" : "false"} // change this line to highlight a current page.
           >
             <button
               type="button"
@@ -84,7 +82,7 @@ function Pagination({
           // Do not remove the aria-label below, it is used for Hatchways automation.
           aria-label="Goto next page"
           onClick={onNext}
-          disabled={false} // change this line to disable a button.
+          disabled={currentPage === totalPages} // change this line to disable a button.
         >
           <ChevronRightIcon />
         </button>
