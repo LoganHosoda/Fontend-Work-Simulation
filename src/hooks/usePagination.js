@@ -26,11 +26,21 @@ export const DOTS = "...";
     2.3. Will there be ellipses on both sides?
   3. The result of these conditions isolates 3 possible scenarios.
   4. Design each array based on result of conditions, return the array.
-*/
+  */
 
+
+const leftDotsRequired = (current) => {
+  return (current > 2);
+}
+
+const rightDotsRequired = (current, total) => {
+  return (current < total - 1);
+}
+ 
 function usePagination({ currentPage, totalPages }) {
   if (totalPages <= 3) {
-    return pageRange(firstPage, totalPages);
+    const length = totalPages;
+    return Array.from( {length}, (x, pageNumber) => pageNumber + 1);
   }
 
   if (totalPages > 3) {
@@ -39,41 +49,19 @@ function usePagination({ currentPage, totalPages }) {
     const leftSibling = currentPage - 1;
     const rightSibling = currentPage +1 ;
     const firstPage = 1;
-    let left;
-    let right;
 
     if (rightDots && !leftDots) {
-      left = [1, 2, 3];
-      right = [DOTS, totalPages];
-      return [...left, ...right];
+      return [1, 2, 3, DOTS, totalPages];
     }
 
     if (rightDots && leftDots) {
-      left = [firstPage, DOTS];
-      right = [DOTS, totalPages];
-      let center = [leftSibling, currentPage, rightSibling];
-      return [...left, ...center, ...right];
+      return [firstPage, DOTS, leftSibling, currentPage, rightSibling, DOTS, totalPages];
     } 
 
-    if (leftDots && !rightDots) {
-      left = [firstPage, DOTS];
-      right = [totalPages - 2, totalPages - 1, totalPages];
-      return [...left, ...right];
+    if (!rightDots && leftDots) {
+      return [firstPage, DOTS, totalPages - 2, totalPages - 1, totalPages];
     }
   } 
-}
-
-const pageRange = (first, last) => {
-  let length = last - first + 1;
-  return Array.from( {length}, (x, pageNumber) => pageNumber + first);
-}
-
-const leftDotsRequired = (current) => {
-  return (current > 2);
-}
-
-const rightDotsRequired = (current, total) => {
-  return (current < total - 1);
 }
 
 export default usePagination;

@@ -4,7 +4,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/outline";
 import usePagination, { DOTS } from "../hooks/usePagination";
 
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useMemo } from "react";
 import { nanoid } from "nanoid";
 
 function Pagination({
@@ -15,10 +15,9 @@ function Pagination({
   pageSize,
   pageSizeOptions,
 }) {
-  const paginationRange = usePagination({
-    currentPage,
-    totalPages,
-  });
+  const paginationRange = useMemo (() => {
+    return usePagination({currentPage, totalPages})
+  }, [currentPage, totalPages]);
 
   const onNext = () => {
     onPageChange(currentPage + 1);
@@ -41,7 +40,7 @@ function Pagination({
           // Do not remove the aria-label below, it is used for Hatchways automation.
           aria-label="Goto previous page"
           onClick={onPrevious}
-          disabled={currentPage === 1 ? true : false} // change this line to disable a button.
+          disabled={currentPage === 1} // change this line to disable a button.
         >
           <ChevronLeftIcon />
         </button>
@@ -83,7 +82,7 @@ function Pagination({
           // Do not remove the aria-label below, it is used for Hatchways automation.
           aria-label="Goto next page"
           onClick={onNext}
-          disabled={currentPage === totalPages ? true : false} // change this line to disable a button.
+          disabled={currentPage === totalPages} // change this line to disable a button.
         >
           <ChevronRightIcon />
         </button>
